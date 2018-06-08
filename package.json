@@ -1,0 +1,11 @@
+{
+  "name": "ai48",
+  "scripts": {
+    "start": "yarn build && node dist/main.js",
+    "build": "./node_modules/parcel-bundler/bin/cli.js build src/main.ts"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.8.1",
+    "typescript": "^2.9.1"
+  }
+}
