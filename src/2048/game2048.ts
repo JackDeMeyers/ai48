@@ -3,22 +3,27 @@ import { Position } from "./position";
 
 export class Game2048 {
   grid: Array<Array<Block>>;
+  render: Boolean;
 
-  constructor() {
+  constructor(render?: Boolean) {
     this.grid = this.createGrid();
     this.initGrid();
+    this.showGame();
+    this.render = render != null ? render : true;
   }
 
   showGame(): void {
-    let grid = '';
-    for (let j = 0; j < 4; j++) {
-      for (let i = 0; i < 4; i++) {
-        grid += this.grid[i][j].value || '_';
-        grid += '|';
+    if (this.render) {
+      let grid = '';
+      for (let j = 0; j < 4; j++) {
+        for (let i = 0; i < 4; i++) {
+          grid += this.grid[i][j].value || '_';
+          grid += '|';
+        }
+        grid += '\n';
       }
-      grid += '\n';
+      console.log(grid);
     }
-    console.log(grid);
   }
 
   swipeLeft(): void {
@@ -60,6 +65,7 @@ export class Game2048 {
     // add
     if (needNew == true) {
       this.addNew();
+      this.showGame();
     }
   }
 
@@ -101,6 +107,7 @@ export class Game2048 {
     // add
     if (needNew == true) {
       this.addNew();
+      this.showGame();
     }
   }
 
@@ -143,6 +150,7 @@ export class Game2048 {
     // add
     if (needNew == true) {
       this.addNew();
+      this.showGame();
     }
   }
 
@@ -185,6 +193,7 @@ export class Game2048 {
     // add
     if (needNew == true) {
       this.addNew();
+      this.showGame();
     }
   }
 

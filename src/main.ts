@@ -1,20 +1,13 @@
 import { Game2048 } from "./2048/game2048";
 
 const game = new Game2048();
-game.showGame();
 game.swipeUp();
-game.showGame();
 game.swipeUp();
-game.showGame();
 game.swipeDown();
-game.showGame();
 game.swipeDown();
-game.showGame();
 game.swipeLeft();
-game.showGame();
 game.swipeLeft();
-game.showGame();
 game.swipeRight();
-game.showGame();
 game.swipeRight();
-game.showGame();
+game.swipeDown();
+game.swipeDown();
