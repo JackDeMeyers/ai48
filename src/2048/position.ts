@@ -3,7 +3,7 @@ export class Position {
   y: number;
 
   constructor(x?: number, y?: number) {
-    this.x = x || Math.floor(Math.random() * 3) + 1;
-    this.y = y || Math.floor(Math.random() * 3) + 1;
+    this.x = x != null ? x : Math.floor(Math.random() * 3) + 1;
+    this.y = y != null ? y : Math.floor(Math.random() * 3) + 1;
   }
 }

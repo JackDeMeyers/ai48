@@ -1,9 +1,12 @@
 {
   "name": "ai48",
   "scripts": {
-    "start": "yarn build && node dist/main.js",
+    "start": "yarn build && yarn go",
+    "go": "node dist/main.js",
+    "debug": "./node_modules/parcel-bundler/bin/cli.js build src/main.ts --no-minify && yarn go",
     "build": "./node_modules/parcel-bundler/bin/cli.js build src/main.ts"
   },
+  "license": "MIT",
   "devDependencies": {
     "parcel-bundler": "^1.8.1",
     "typescript": "^2.9.1"

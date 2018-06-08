@@ -1,4 +1,20 @@
 import { Game2048 } from "./2048/game2048";
 
 const game1 = new Game2048();
-console.log(game1.grid);
+game1.showGame();
+game1.swipeUp();
+game1.showGame();
+game1.swipeUp();
+game1.showGame();
+game1.swipeDown();
+game1.showGame();
+game1.swipeDown();
+game1.showGame();
+game1.swipeLeft();
+game1.showGame();
+game1.swipeLeft();
+game1.showGame();
+game1.swipeRight();
+game1.showGame();
+game1.swipeRight();
+game1.showGame();

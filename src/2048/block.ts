@@ -2,12 +2,19 @@ import { Position } from "./position";
 
 export class Block {
   open: Boolean;
-  value: number;
+  val: number;
   position: Position;
 
-  constructor(x, y) {
+  get value() {
+    return this.open ? null : this.val;
+  }
+
+  set value(x: number) {
+    this.val = x;
+  }
+
+  constructor() {
     this.open = true;
-    this.value = null;
-    this.position = new Position(x, y);
+    this.val = null;
   }
 }
