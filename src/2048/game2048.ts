@@ -228,15 +228,15 @@ export class Game2048 {
   }
 
   private setInitBlocks(): void {
-    let p1 = new Position(3, 2);
+    let p1 = new Position();
     let p2;
     while (true) {
-      p2 = new Position(3, 3);
+      p2 = new Position();
       if (p1 != p2) break;
     }
     this.grid[p1.x][p1.y].open = false;
     this.grid[p1.x][p1.y].value = 2;
     this.grid[p2.x][p2.y].open = false;
-    this.grid[p2.x][p2.y].value = 4;
+    this.grid[p2.x][p2.y].value = 2;
   }
 }
