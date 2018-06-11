@@ -2,6 +2,10 @@ import { Block } from "./block";
 import { Position } from "./position";
 import { Direction } from "./direction";
 
+/**
+ * Implementation of the game 2048.
+ * https://gabrielecirulli.github.io/2048/
+ */
 export class Game2048 {
   grid: Array<Array<Block>>;
   needNew: Boolean;
@@ -50,7 +54,7 @@ export class Game2048 {
   private _swipeLeft(): void {
     for (let j: number = 0; j < 4; j++) {
       for (let i: number = 0; i < 4; i++) {
-        this._attemptSwipe(i, j, Direction.Left);
+        this._attemptMove(i, j, Direction.Left);
       }
     }
   }
@@ -58,7 +62,7 @@ export class Game2048 {
   private _swipeRight(): void {
     for (let j: number = 0; j < 4; j++) {
       for (let i: number = 3; i >= 0; i--) {
-        this._attemptSwipe(i, j, Direction.Right);
+        this._attemptMove(i, j, Direction.Right);
       }
     }
   }
@@ -66,7 +70,7 @@ export class Game2048 {
   private _swipeUp(): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 0; j < 4; j++) {
-        this._attemptSwipe(i, j, Direction.Up);
+        this._attemptMove(i, j, Direction.Up);
       }
     }
   }
@@ -74,12 +78,12 @@ export class Game2048 {
   private _swipeDown(): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 3; j >= 0; j--) {
-        this._attemptSwipe(i, j, Direction.Down);
+        this._attemptMove(i, j, Direction.Down);
       }
     }
   }
 
-  private _attemptSwipe(i: number, j: number, dir: Direction): void {
+  private _attemptMove(i: number, j: number, dir: Direction): void {
     let curBlock: Block = this.grid[i][j];
     if (!curBlock.open) {
       while (curBlock.canMove(dir, this.grid)) {
