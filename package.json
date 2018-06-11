@@ -5,8 +5,9 @@
     "go": "node dist/main.js",
     "debug": "./node_modules/parcel-bundler/bin/cli.js build src/main.ts --no-minify && yarn go",
     "build": "./node_modules/parcel-bundler/bin/cli.js build src/main.ts",
-    "fresh": "yarn clean && yarn install && yarn build",
-    "clean": "rm -rf node_modules dist .cache"
+    "fresh": "yarn fullclean && yarn install && yarn build",
+    "clean": "rm -rf dist .cache",
+    "fullclean": "rm -rf dist node_modules .cache"
   },
   "license": "MIT",
   "devDependencies": {
