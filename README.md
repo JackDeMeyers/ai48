@@ -9,3 +9,5 @@ Requires [yarn](https://yarnpkg.com). Run `yarn install` to install packages.
  - run - `yarn go`
  - build & run - `yarn start`
  - build non-minified and run - `yarn debug`
+ - clean workspace - `yarn clean`
+ - clean workspace, reinstall dependencies, & build - `yarn fresh`
