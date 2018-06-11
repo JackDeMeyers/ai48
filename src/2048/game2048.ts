@@ -102,8 +102,8 @@ export class Game2048 {
   private _initGrid(): void {
     this._createGrid();
     this._fillGrid();
-    this._addNewBlock();
-    this._addNewBlock();
+    this._addNewBlock(true);
+    this._addNewBlock(true);
   }
 
   private _createGrid(): void {
@@ -121,12 +121,12 @@ export class Game2048 {
     }
   }
 
-  private _addNewBlock(): void {
+  private _addNewBlock(twoFlag: Boolean = false): void {
     let p: Position = new Position();
     while (!this.grid[p.x][p.y].open) {
       p = new Position();
     }
-    this.grid[p.x][p.y].value = Math.random() >= 0.25 ? 2 : 4;
+    this.grid[p.x][p.y].value = twoFlag ? 2 : Math.random() >= 0.25 ? 2 : 4;
     this.grid[p.x][p.y].open = false;
     this.needNew = false;
   }
