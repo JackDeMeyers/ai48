@@ -1,13 +1,10 @@
 import { Game2048 } from "./2048/game2048";
+import { Direction } from "./2048/direction";
 
-const game = new Game2048();
-game.swipeUp();
-game.swipeUp();
-game.swipeDown();
-game.swipeDown();
-game.swipeLeft();
-game.swipeLeft();
-game.swipeRight();
-game.swipeRight();
-game.swipeDown();
-game.swipeDown();
+let game: Game2048 = new Game2048();
+game.swipe(Direction.Down);
+game.swipe(Direction.Up);
+game.swipe(Direction.Down);
+game.swipe(Direction.Up);
+game.swipe(Direction.Down);
+game.swipe(Direction.Up);
