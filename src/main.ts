@@ -1,4 +1,4 @@
-import { Game2048 } from "./2048/game2048";
+import { Game2048 } from "./2048/main";
 import { Direction } from "./2048/direction";
 import * as readlineSync from "readline-sync";
 
