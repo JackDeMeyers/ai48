@@ -2,8 +2,8 @@
  * Enum for swipe and neighbor direction.
  */
 export enum Direction {
-  Up = 1,
+  Left = 0,
+  Up,
   Down,
-  Left,
   Right
 }

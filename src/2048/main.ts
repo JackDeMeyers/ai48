@@ -1,6 +1,7 @@
 import { Block } from "./block";
 import { Position } from "./position";
 import { Direction } from "./direction";
+import { reduceEachLeadingCommentRange } from "typescript";
 
 /**
  * Implementation of the game 2048.
@@ -10,7 +11,65 @@ export class Game2048 {
   private _grid: Array<Array<Block>>;
   private _needNew: Boolean;
   private _largest: number;
+  private _score: number;
+  private render: Boolean;
 
+  /**
+   * Return the game's grid.
+   */
+  get grid(): Array<Array<Block>> {
+    return this._grid;
+  }
+
+  /**
+   * Return the game's score.
+   */
+  get score(): number {
+    return this._score;
+  }
+
+  /**
+   * Return the largest block value.
+   */
+  getLargest(): number {
+    return this._largest;
+  }
+
+  /**
+   * Icrease the game's score by the given value.
+   * @param s Value to increment score by.
+   */
+  addToScore(s: number): number {
+    this._score += s;
+    return this._score;
+  }
+
+  /**
+   * Return a clone of the current game.
+   */
+  getClone(): Game2048 {
+    let clone: Game2048 = new Game2048();
+    clone.render = false;
+    clone._needNew = this._needNew;
+    clone._largest = this._largest;
+    clone._grid = this._createGrid();
+    this._fillGrid(clone._grid);
+    clone._score = this._score;
+    for (let i: number = 0; i < 4; i++) {
+      for (let j: number = 0; j < 4; j++) {
+        clone._grid[i][j].value = this._grid[i][j].value;
+        clone._grid[i][j].open = this._grid[i][j].open;
+        clone._grid[i][j].canCombine = this._grid[i][j].canCombine;
+      }
+    }
+    return clone;
+  }
+
+  /**
+   * Test if the given number is larger than _largest.
+   * If true, set largest to the given number.
+   * @param n Number to test.
+   */
   private set largest(n: number) {
     if (n > this._largest) {
       this._largest = n;
@@ -18,13 +77,14 @@ export class Game2048 {
   }
 
   /**
-   * Initialize the game and display the state to the console.
+   * Initialize the game.
    */
   constructor() {
     this._initGrid();
     this._needNew = false;
     this._largest = 2;
-    this.display();
+    this._score = 0;
+    this.render = true;
   }
 
   isGameOver(): Boolean {
@@ -49,29 +109,32 @@ export class Game2048 {
    * Display the game to the console.
    */
   display(): void {
-    let grid: string = "";
-    let len: number = this._largest.toString().length;
+    if (this.render) {
+      let grid: string = "";
+      let len: number = this._largest.toString().length;
 
-    let spc: string = Array(len + 1).join("_");
-    for (let j: number = 0; j < 4; j++) {
-      for (let i: number = 0; i < 4; i++) {
-        let curBlock: Block = this._grid[i][j];
-        if (!curBlock.open) {
-          grid += curBlock.value + spc.substr(0, len - curBlock.value.toString().length) + "|";
-        } else {
-          grid += spc + "|";
+      let spc: string = Array(len + 1).join("_");
+      for (let j: number = 0; j < 4; j++) {
+        for (let i: number = 0; i < 4; i++) {
+          let curBlock: Block = this._grid[i][j];
+          if (!curBlock.open) {
+            grid += curBlock.value + spc.substr(0, len - curBlock.value.toString().length) + "|";
+          } else {
+            grid += spc + "|";
+          }
         }
+        grid += "\n";
       }
-      grid += "\n";
+      console.log(grid);
     }
-    console.log(grid);
   }
 
   /**
    * Perform a swipe action in the desired direction.
+   * Return true if the swipe was successful, else false.
    * @param dir Swipe direction.
    */
-  swipe(dir: Direction): void {
+  swipe(dir: Direction): Boolean {
     switch (dir) {
       case Direction.Left:
         this._swipeLeft();
@@ -91,7 +154,9 @@ export class Game2048 {
     if (this._needNew) {
       this._addNewBlock();
       this.display();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -151,7 +216,7 @@ export class Game2048 {
     if (!curBlock.open) {
       while (curBlock.canMove(dir, this._grid)) {
         let neighbor: Block = curBlock.getNeighbor(dir, this._grid);
-        this.largest = curBlock.moveTo(neighbor);
+        this.largest = curBlock.moveTo(neighbor, this);
         curBlock = neighbor;
         this._needNew = true;
       }
@@ -173,29 +238,30 @@ export class Game2048 {
    * Initialize the grid to begin a new game.
    */
   private _initGrid(): void {
-    this._createGrid();
-    this._fillGrid();
+    this._grid = this._createGrid();
+    this._fillGrid(this._grid);
     this._addNewBlock(true);
     this._addNewBlock(true);
   }
 
   /**
-   * Create the 4x4 Block grid.
+   * Return a 4x4 Block grid.
    */
-  private _createGrid(): void {
-    this._grid = new Array(4);
+  private _createGrid(): Array<Array<Block>> {
+    let grid: Array<Array<Block>> = new Array(4);
     for (let i: number = 0; i < 4; i++) {
-      this._grid[i] = new Array(4);
+      grid[i] = new Array(4);
     }
+    return grid;
   }
 
   /**
-   * Fill the grid with new Blocks.
+   * Fill a grid with new Blocks.
    */
-  private _fillGrid(): void {
-    for (let i: number = 0; i < this._grid.length; i++) {
-      for (let j: number = 0; j < this._grid[i].length; j++) {
-        this._grid[i][j] = new Block(new Position(i, j));
+  private _fillGrid(grid: Array<Array<Block>>): void {
+    for (let i: number = 0; i < 4; i++) {
+      for (let j: number = 0; j < 4; j++) {
+        grid[i][j] = new Block(new Position(i, j));
       }
     }
   }
@@ -211,7 +277,7 @@ export class Game2048 {
     while (!this._grid[p.x][p.y].open) {
       p = new Position();
     }
-    this._grid[p.x][p.y].value = twoFlag ? 2 : Math.random() >= 0.25 ? 2 : 4;
+    this._grid[p.x][p.y].value = twoFlag ? 2 : Math.random() >= 0.10 ? 2 : 4;
     this._grid[p.x][p.y].open = false;
     this._needNew = false;
   }

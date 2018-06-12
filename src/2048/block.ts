@@ -1,5 +1,6 @@
 import { Position } from "./position";
 import { Direction } from "./direction";
+import { Game2048 } from "./main";
 
 /**
  * Class which contains the state for a block within the game's grid.
@@ -61,15 +62,18 @@ export class Block {
    *  1) if moving into an empty block, just update the destination's value.
    *  2) if moving into a block to combine, double the destination's value.
    * Set flags according to move type.
+   * Also update's the game's score.
    * @param block Destination Block.
+   * @param game Game to update score.
    */
-  moveTo(block: Block): number {
+  moveTo(block: Block, game: Game2048): number {
     if (this._valuesMatch(block)) {
       if (block.canCombine && this.canCombine) {
         block.value *= 2;
         block.canCombine = false;
         block.open = false;
         this.open = true;
+        game.addToScore(block.value);
       }
     } else {
       block.value = this.value;
