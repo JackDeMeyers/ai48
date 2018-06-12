@@ -52,7 +52,8 @@ export class Block {
   canMove(dir: Direction, grid: Array<Array<Block>>): Boolean {
     const neighbor: Block = this.getNeighbor(dir, grid);
     if (neighbor === null) { return false; }
-    return (neighbor.open || this.value === neighbor.value);
+    return ((neighbor.open && neighbor.canCombine && this.canCombine)
+      || (this.value === neighbor.value && neighbor.canCombine && this.canCombine));
   }
 
   /**
@@ -62,9 +63,9 @@ export class Block {
    * Set flags according to move type.
    * @param block Destination Block.
    */
-  moveTo(block: Block): void {
+  moveTo(block: Block): number {
     if (this._valuesMatch(block)) {
-      if (block.canCombine) {
+      if (block.canCombine && this.canCombine) {
         block.value *= 2;
         block.canCombine = false;
         block.open = false;
@@ -75,6 +76,7 @@ export class Block {
       block.open = false;
       this.open = true;
     }
+    return block.value;
   }
 
   /**
