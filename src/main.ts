@@ -1,24 +1,18 @@
 import { Game2048 } from "./2048/main";
 import { Direction } from "./2048/direction";
-import * as readlineSync from "readline-sync";
+import { Game2048AI } from "./ai/main";
+// import * as readlineSync from "readline-sync";
 
 let game: Game2048 = new Game2048();
+let AI: Game2048AI = new Game2048AI();
+let moves: number = 0;
+game.display();
 
 while (!game.isGameOver()) {
-  switch (readlineSync.question("Direction: ")) {
-    case "w":
-      game.swipe(Direction.Up);
-      break;
-    case "a":
-      game.swipe(Direction.Left);
-      break;
-    case "s":
-      game.swipe(Direction.Down);
-      break;
-    case "d":
-      game.swipe(Direction.Right);
-      break;
-    default:
-      break;
-  }
+  let dir: Direction = AI.AI_getBest(game, 500);
+  game.swipe(dir);
+  moves++;
 }
+console.log("Game Over. Score: ", game.score);
+console.log("Largest Tile: ", game.getLargest());
+console.log("Number of moves: ", moves);
