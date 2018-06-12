@@ -14,7 +14,7 @@ export class Position {
    * If left null, coordinate is randomly generated.
    */
   constructor(x?: number, y?: number) {
-    this.x = x != null ? x : Math.floor(Math.random() * 3) + 1;
-    this.y = y != null ? y : Math.floor(Math.random() * 3) + 1;
+    this.x = x != null ? x : Math.floor(Math.random() * 4);
+    this.y = y != null ? y : Math.floor(Math.random() * 4);
   }
 }
