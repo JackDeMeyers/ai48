@@ -61,7 +61,7 @@ export class TestManager {
 
   private outputTrialResults(game: Game2048, moves: number, trialNum: number): void {
     console.log("\n----------Trial #" + trialNum + " Results----------");
-    console.log("Game Over. Score: ", game.score);
+    console.log("Score: ", game.score);
     console.log("Largest Tile: ", game.getLargest());
     console.log("Number of moves: ", moves);
     console.log("\n Grid:");
