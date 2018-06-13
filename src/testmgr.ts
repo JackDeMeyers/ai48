@@ -9,6 +9,7 @@ export class TestManager {
   private largest: number;
   private totalScore: number;
   private totalMoves: number;
+  private count1024: number;
   private count2048: number;
   private count4096: number;
   private count8192: number;
@@ -20,6 +21,7 @@ export class TestManager {
     this.largest = 0;
     this.totalScore = 0;
     this.totalMoves = 0;
+    this.count1024 = 0;
     this.count2048 = 0;
     this.count4096 = 0;
     this.count8192 = 0;
@@ -37,6 +39,7 @@ export class TestManager {
     this.highScore = Math.max(this.highScore, game.score);
     this.largest = Math.max(this.largest, game.getLargest());
     this.totalMoves += numMoves;
+    if (game.getLargest() >= 1024) { this.count1024++; }
     if (game.getLargest() >= 2048) { this.count2048++; }
     if (game.getLargest() >= 4096) { this.count4096++; }
     if (game.getLargest() >= 8192) { this.count8192++; }
@@ -73,12 +76,14 @@ export class TestManager {
     console.log("\n--------------------Test Results--------------------");
     console.log("Trials: ", this.numTrials);
     console.log("Simulation Runs: ", this.numSimRuns);
-    console.log("\nHighest Score: ", this.highScore);
+    console.log("\nTotal Score: ", this.totalScore);
+    console.log("Highest Score: ", this.highScore);
     console.log("Avg. Score: ", Math.round(this.totalScore / this.numTrials));
     console.log("Largest Block: ", this.largest);
     console.log("\nTotal Moves: ", this.totalMoves);
     console.log("Avg. Moves: ", Math.round(this.totalMoves / this.numTrials));
-    console.log("\n2048 %: ", Math.round(this.count2048 / this.numTrials * 100));
+    console.log("\n1024 %: ", Math.round(this.count1024 / this.numTrials * 100));
+    console.log("2048 %: ", Math.round(this.count2048 / this.numTrials * 100));
     console.log("4096 %: ", Math.round(this.count4096 / this.numTrials * 100));
     console.log("8192+ %: ", Math.round(this.count8192 / this.numTrials * 100));
     console.log("----------------------------------------------------");
