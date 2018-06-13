@@ -153,7 +153,7 @@ export class Game2048 {
 
     if (this._needNew) {
       this._addNewBlock();
-      this.display();
+      // this.display();
       return true;
     }
     return false;

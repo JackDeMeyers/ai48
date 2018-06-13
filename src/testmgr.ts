@@ -37,9 +37,9 @@ export class TestManager {
     this.highScore = Math.max(this.highScore, game.score);
     this.largest = Math.max(this.largest, game.getLargest());
     this.totalMoves += numMoves;
-    if (game.score >= 2048) { this.count2048++; }
-    if (game.score >= 4096) { this.count4096++; }
-    if (game.score >= 8192) { this.count8192++; }
+    if (game.getLargest() >= 2048) { this.count2048++; }
+    if (game.getLargest() >= 4096) { this.count4096++; }
+    if (game.getLargest() >= 8192) { this.count8192++; }
   }
 
   private runTrials(): void {
@@ -47,21 +47,26 @@ export class TestManager {
       let game: Game2048 = new Game2048();
       let AI: Game2048AI = new Game2048AI();
       let moves: number = 0;
-      // game.display();
 
       while (!game.isGameOver()) {
         let dir: Direction = AI.getBestMove(game, this.numSimRuns);
         game.swipe(dir);
         moves++;
       }
-      console.log("\n----------Trial #" + i + " Results----------");
-      console.log("Game Over. Score: ", game.score);
-      console.log("Largest Tile: ", game.getLargest());
-      console.log("Number of moves: ", moves);
-      console.log("--------------------------------------------");
 
+      this.outputTrialResults(game, moves, i);
       this.updateStats(game, moves);
     }
+  }
+
+  private outputTrialResults(game: Game2048, moves: number, trialNum: number): void {
+    console.log("\n----------Trial #" + trialNum + " Results----------");
+    console.log("Game Over. Score: ", game.score);
+    console.log("Largest Tile: ", game.getLargest());
+    console.log("Number of moves: ", moves);
+    console.log("\n Grid:");
+    game.display();
+    console.log("--------------------------------------------");
   }
 
   private outputResults(): void {
@@ -69,13 +74,13 @@ export class TestManager {
     console.log("Trials: ", this.numTrials);
     console.log("Simulation Runs: ", this.numSimRuns);
     console.log("\nHighest Score: ", this.highScore);
-    console.log("Avg. Score: ", this.totalScore / this.numTrials);
+    console.log("Avg. Score: ", Math.round(this.totalScore / this.numTrials));
     console.log("Largest Block: ", this.largest);
     console.log("\nTotal Moves: ", this.totalMoves);
-    console.log("Avg. Moves: ", this.totalMoves / this.numTrials);
-    console.log("\n2048 %: ", this.count2048 / this.numTrials * 100);
-    console.log("4096 %: ", this.count4096 / this.numTrials * 100);
-    console.log("8192 %: ", this.count8192 / this.numTrials * 100);
+    console.log("Avg. Moves: ", Math.round(this.totalMoves / this.numTrials));
+    console.log("\n2048 %: ", Math.round(this.count2048 / this.numTrials * 100));
+    console.log("4096 %: ", Math.round(this.count4096 / this.numTrials * 100));
+    console.log("8192+ %: ", Math.round(this.count8192 / this.numTrials * 100));
     console.log("----------------------------------------------------");
   }
 }
