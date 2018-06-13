@@ -1,5 +1,5 @@
 import { Direction } from "../2048/direction";
-import { Game2048 } from "../2048/main";
+import { Game2048 } from "../2048/game";
 
 export class Game2048AI {
 

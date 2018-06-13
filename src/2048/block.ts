@@ -1,6 +1,6 @@
 import { Position } from "./position";
 import { Direction } from "./direction";
-import { Game2048 } from "./main";
+import { Game2048 } from "./game";
 
 /**
  * Class which contains the state for a block within the game's grid.
