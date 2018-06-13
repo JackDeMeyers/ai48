@@ -1,4 +1,4 @@
 node_modules/
 .cache/
 dist/
-output.txt
+output*.txt
