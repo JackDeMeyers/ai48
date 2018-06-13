@@ -3,9 +3,9 @@
   "scripts": {
     "go": "node dist/main.js",
     "build": "./node_modules/typescript/bin/tsc --target es5 src/main.ts --outDir ./dist/ --sourcemap",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist output.txt",
     "fullclean": "yarn clean && rm -rf node_modules",
-    "fresh": "yarn fullclean && yarn install && yarn build",
+    "fresh": "yarn fullclean && yarn install",
     "start": "yarn build && yarn go"
   },
   "license": "MIT",
