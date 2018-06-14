@@ -3,6 +3,9 @@ import { Direction } from "./2048/direction";
 import { Game2048AI } from "./ai/ai";
 // import * as readlineSync from "readline-sync";
 
+/**
+ * Class to support testing of the AI and 2048 game.
+ */
 export class TestManager {
 
   private highScore: number;
@@ -15,8 +18,15 @@ export class TestManager {
   private count8192: number;
   private numTrials: number;
   private numSimRuns: number;
+  private render: Boolean;
 
-  constructor(numTrials: number, numSimRuns: number) {
+  /**
+   * Create a new 2048 AI test instance.
+   * @param numTrials Number of trials.
+   * @param numSimRuns Number of simulation runs per trial.
+   * @param render Whether to display every move to the console.
+   */
+  constructor(numTrials: number, numSimRuns: number, render: Boolean) {
     this.highScore = 0;
     this.largest = 0;
     this.totalScore = 0;
@@ -27,16 +37,25 @@ export class TestManager {
     this.count8192 = 0;
     this.numTrials = numTrials;
     this.numSimRuns = numSimRuns;
+    this.render = render;
   }
 
+  /**
+   * Run test.
+   */
   main(): void {
     this.runTrials();
     this.outputResults();
   }
 
+  /**
+   * Updates global stats for the test manager.
+   * @param game The current game.
+   * @param numMoves The total number of moves in the current game.
+   */
   private updateStats(game: Game2048, numMoves: number): void {
-    this.totalScore += game.score;
-    this.highScore = Math.max(this.highScore, game.score);
+    this.totalScore += game.getScore();
+    this.highScore = Math.max(this.highScore, game.getScore());
     this.largest = Math.max(this.largest, game.getLargest());
     this.totalMoves += numMoves;
     if (game.getLargest() >= 1024) { this.count1024++; }
@@ -45,15 +64,21 @@ export class TestManager {
     if (game.getLargest() >= 8192) { this.count8192++; }
   }
 
+  /**
+   * Run all test trials.
+   */
   private runTrials(): void {
     for (let i: number = 0; i < this.numTrials; i++) {
       let game: Game2048 = new Game2048();
-      let AI: Game2048AI = new Game2048AI();
+      let AI: Game2048AI = new Game2048AI(game, this.numSimRuns);
       let moves: number = 0;
 
       while (!game.isGameOver()) {
-        let dir: Direction = AI.getBestMove(game, this.numSimRuns);
+        let dir: Direction = AI.getBestMove();
         game.swipe(dir);
+        if (this.render) {
+          game.display();
+        }
         moves++;
       }
 
@@ -62,16 +87,25 @@ export class TestManager {
     }
   }
 
+  /**
+   * Display trial results to console.
+   * @param game The current game.
+   * @param moves The total number of moves in the current game.
+   * @param trialNum The trial "id".
+   */
   private outputTrialResults(game: Game2048, moves: number, trialNum: number): void {
     console.log("\n----------Trial #" + trialNum + " Results----------");
-    console.log("Score: ", game.score);
+    console.log("Score: ", game.getScore());
     console.log("Largest Tile: ", game.getLargest());
     console.log("Number of moves: ", moves);
     console.log("\n Grid:");
     game.display();
-    console.log("--------------------------------------------");
+    console.log("------------------------------------");
   }
 
+  /**
+   * Display full test results to console.
+   */
   private outputResults(): void {
     console.log("\n--------------------Test Results--------------------");
     console.log("Trials: ", this.numTrials);

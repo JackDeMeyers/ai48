@@ -12,6 +12,17 @@ export class Block {
   canCombine: Boolean;
 
   /**
+   * Create a block at the given position.
+   * @param pos Position to create the block.
+   */
+  constructor(pos: Position) {
+    this.open = true;
+    this._val = null;
+    this.position = pos;
+    this.canCombine = true;
+  }
+
+  /**
    * Return null if the block is open,
    * else return the block's value.
    */
@@ -24,17 +35,6 @@ export class Block {
    */
   set value(x: number) {
     this._val = x;
-  }
-
-  /**
-   * Create a block at the given position.
-   * @param pos Position to create the block.
-   */
-  constructor(pos: Position) {
-    this.open = true;
-    this._val = null;
-    this.position = pos;
-    this.canCombine = true;
   }
 
   /**
@@ -67,7 +67,7 @@ export class Block {
    * @param game Game to update score.
    */
   moveTo(block: Block, game: Game2048): number {
-    if (this._valuesMatch(block)) {
+    if (this.valuesMatch(block)) {
       if (block.canCombine && this.canCombine) {
         block.value *= 2;
         block.canCombine = false;
@@ -121,7 +121,7 @@ export class Block {
    * value are equal, else return false;
    * @param block Compare Block.
    */
-  private _valuesMatch(block: Block): Boolean {
+  private valuesMatch(block: Block): Boolean {
     return this.value === block.value;
   }
 }

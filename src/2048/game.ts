@@ -1,31 +1,40 @@
 import { Block } from "./block";
 import { Position } from "./position";
 import { Direction } from "./direction";
-import { reduceEachLeadingCommentRange } from "typescript";
 
 /**
  * Implementation of the game 2048.
- * https://gabrielecirulli.github.io/2048/
  */
 export class Game2048 {
-  private _grid: Array<Array<Block>>;
-  private _needNew: Boolean;
+  private grid: Array<Array<Block>>;
+  private needNew: Boolean;
   private _largest: number;
-  private _score: number;
+  private score: number;
   private render: Boolean;
+
+  /**
+   * Initialize the game.
+   */
+  constructor() {
+    this.initGrid();
+    this.needNew = false;
+    this._largest = 2;
+    this.score = 0;
+    this.render = true;
+  }
 
   /**
    * Return the game's grid.
    */
-  get grid(): Array<Array<Block>> {
-    return this._grid;
+  getGrid(): Array<Array<Block>> {
+    return this.grid;
   }
 
   /**
    * Return the game's score.
    */
-  get score(): number {
-    return this._score;
+  getScore(): number {
+    return this.score;
   }
 
   /**
@@ -40,29 +49,8 @@ export class Game2048 {
    * @param s Value to increment score by.
    */
   addToScore(s: number): number {
-    this._score += s;
-    return this._score;
-  }
-
-  /**
-   * Return a clone of the current game.
-   */
-  getClone(): Game2048 {
-    let clone: Game2048 = new Game2048();
-    clone.render = false;
-    clone._needNew = this._needNew;
-    clone._largest = this._largest;
-    clone._grid = this._createGrid();
-    this._fillGrid(clone._grid);
-    clone._score = this._score;
-    for (let i: number = 0; i < 4; i++) {
-      for (let j: number = 0; j < 4; j++) {
-        clone._grid[i][j].value = this._grid[i][j].value;
-        clone._grid[i][j].open = this._grid[i][j].open;
-        clone._grid[i][j].canCombine = this._grid[i][j].canCombine;
-      }
-    }
-    return clone;
+    this.score += s;
+    return this.score;
   }
 
   /**
@@ -77,35 +65,6 @@ export class Game2048 {
   }
 
   /**
-   * Initialize the game.
-   */
-  constructor() {
-    this._initGrid();
-    this._needNew = false;
-    this._largest = 2;
-    this._score = 0;
-    this.render = true;
-  }
-
-  isGameOver(): Boolean {
-    for (let i: number = 0; i < 4; i++) {
-      for (let j: number = 0; j < 4; j++) {
-        if (this._grid[i][j].open) {
-          return false;
-        } else {
-          if (this._grid[i][j].canMove(Direction.Left, this._grid) ||
-            this._grid[i][j].canMove(Direction.Right, this._grid) ||
-            this._grid[i][j].canMove(Direction.Down, this._grid) ||
-            this._grid[i][j].canMove(Direction.Up, this._grid)) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
-  }
-
-  /**
    * Display the game to the console.
    */
   display(): void {
@@ -116,7 +75,7 @@ export class Game2048 {
       let spc: string = Array(len + 1).join("_");
       for (let j: number = 0; j < 4; j++) {
         for (let i: number = 0; i < 4; i++) {
-          let curBlock: Block = this._grid[i][j];
+          let curBlock: Block = this.grid[i][j];
           if (!curBlock.open) {
             grid += curBlock.value + spc.substr(0, len - curBlock.value.toString().length) + "|";
           } else {
@@ -130,6 +89,49 @@ export class Game2048 {
   }
 
   /**
+   * Return a clone of the current game.
+   */
+  getClone(): Game2048 {
+    let clone: Game2048 = new Game2048();
+    clone.render = false;
+    clone.needNew = this.needNew;
+    clone._largest = this._largest;
+    clone.grid = this.createGrid();
+    this.fillGrid(clone.grid);
+    clone.score = this.score;
+    for (let i: number = 0; i < 4; i++) {
+      for (let j: number = 0; j < 4; j++) {
+        clone.grid[i][j].value = this.grid[i][j].value;
+        clone.grid[i][j].open = this.grid[i][j].open;
+        clone.grid[i][j].canCombine = this.grid[i][j].canCombine;
+      }
+    }
+    return clone;
+  }
+
+  /**
+   * Returns true if there are no more legal moves,
+   * else false.
+   */
+  isGameOver(): Boolean {
+    for (let i: number = 0; i < 4; i++) {
+      for (let j: number = 0; j < 4; j++) {
+        if (this.grid[i][j].open) {
+          return false;
+        } else {
+          if (this.grid[i][j].canMove(Direction.Left, this.grid) ||
+            this.grid[i][j].canMove(Direction.Right, this.grid) ||
+            this.grid[i][j].canMove(Direction.Down, this.grid) ||
+            this.grid[i][j].canMove(Direction.Up, this.grid)) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
+  }
+
+  /**
    * Perform a swipe action in the desired direction.
    * Return true if the swipe was successful, else false.
    * @param dir Swipe direction.
@@ -137,22 +139,22 @@ export class Game2048 {
   swipe(dir: Direction): Boolean {
     switch (dir) {
       case Direction.Left:
-        this._swipeLeft();
+        this.swipeLeft();
         break;
       case Direction.Right:
-        this._swipeRight();
+        this.swipeRight();
         break;
       case Direction.Up:
-        this._swipeUp();
+        this.swipeUp();
         break;
       case Direction.Down:
-        this._swipeDown();
+        this.swipeDown();
         break;
     }
-    this._resetCombineFlags();
+    this.resetCombineFlags();
 
-    if (this._needNew) {
-      this._addNewBlock();
+    if (this.needNew) {
+      this.addNewBlock();
       // this.display();
       return true;
     }
@@ -162,11 +164,11 @@ export class Game2048 {
   /**
    * Swipe the board left.
    */
-  private _swipeLeft(): void {
+  private swipeLeft(): void {
     for (let j: number = 0; j < 4; j++) {
       for (let i: number = 0; i < 4; i++) {
-        let curBlock: Block = this._grid[i][j];
-        this._attemptMove(curBlock, Direction.Left);
+        let curBlock: Block = this.grid[i][j];
+        this.attemptMove(curBlock, Direction.Left);
       }
     }
   }
@@ -174,11 +176,11 @@ export class Game2048 {
   /**
    * Swipe the board right.
    */
-  private _swipeRight(): void {
+  private swipeRight(): void {
     for (let j: number = 0; j < 4; j++) {
       for (let i: number = 3; i >= 0; i--) {
-        let curBlock: Block = this._grid[i][j];
-        this._attemptMove(curBlock, Direction.Right);
+        let curBlock: Block = this.grid[i][j];
+        this.attemptMove(curBlock, Direction.Right);
       }
     }
   }
@@ -186,11 +188,11 @@ export class Game2048 {
   /**
    * Swipe the board up.
    */
-  private _swipeUp(): void {
+  private swipeUp(): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 0; j < 4; j++) {
-        let curBlock: Block = this._grid[i][j];
-        this._attemptMove(curBlock, Direction.Up);
+        let curBlock: Block = this.grid[i][j];
+        this.attemptMove(curBlock, Direction.Up);
       }
     }
   }
@@ -198,11 +200,11 @@ export class Game2048 {
   /**
    * Swipe the board down.
    */
-  private _swipeDown(): void {
+  private swipeDown(): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 3; j >= 0; j--) {
-        let curBlock: Block = this._grid[i][j];
-        this._attemptMove(curBlock, Direction.Down);
+        let curBlock: Block = this.grid[i][j];
+        this.attemptMove(curBlock, Direction.Down);
       }
     }
   }
@@ -212,13 +214,13 @@ export class Game2048 {
    * @param curBlock Block to move.
    * @param dir Direction to move Block.
    */
-  private _attemptMove(curBlock: Block, dir: Direction): void {
+  private attemptMove(curBlock: Block, dir: Direction): void {
     if (!curBlock.open) {
-      while (curBlock.canMove(dir, this._grid)) {
-        let neighbor: Block = curBlock.getNeighbor(dir, this._grid);
+      while (curBlock.canMove(dir, this.grid)) {
+        let neighbor: Block = curBlock.getNeighbor(dir, this.grid);
         this.largest = curBlock.moveTo(neighbor, this);
         curBlock = neighbor;
-        this._needNew = true;
+        this.needNew = true;
       }
     }
   }
@@ -226,10 +228,10 @@ export class Game2048 {
   /**
    * Reset all Blocks' canCombine flags.
    */
-  private _resetCombineFlags(): void {
+  private resetCombineFlags(): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 0; j < 4; j++) {
-        this._grid[i][j].resetCombineFlag();
+        this.grid[i][j].resetCombineFlag();
       }
     }
   }
@@ -237,17 +239,17 @@ export class Game2048 {
   /**
    * Initialize the grid to begin a new game.
    */
-  private _initGrid(): void {
-    this._grid = this._createGrid();
-    this._fillGrid(this._grid);
-    this._addNewBlock(true);
-    this._addNewBlock(true);
+  private initGrid(): void {
+    this.grid = this.createGrid();
+    this.fillGrid(this.grid);
+    this.addNewBlock(true);
+    this.addNewBlock(true);
   }
 
   /**
    * Return a 4x4 Block grid.
    */
-  private _createGrid(): Array<Array<Block>> {
+  private createGrid(): Array<Array<Block>> {
     let grid: Array<Array<Block>> = new Array(4);
     for (let i: number = 0; i < 4; i++) {
       grid[i] = new Array(4);
@@ -257,8 +259,9 @@ export class Game2048 {
 
   /**
    * Fill a grid with new Blocks.
+   * @param grid The grid to fill with new blocks.
    */
-  private _fillGrid(grid: Array<Array<Block>>): void {
+  private fillGrid(grid: Array<Array<Block>>): void {
     for (let i: number = 0; i < 4; i++) {
       for (let j: number = 0; j < 4; j++) {
         grid[i][j] = new Block(new Position(i, j));
@@ -272,13 +275,13 @@ export class Game2048 {
    *  25% chance value = 4, 75% chance value = 2.
    * @param twoFlag Optional - True if new Block should have value = 2.
    */
-  private _addNewBlock(twoFlag: Boolean = false): void {
+  private addNewBlock(twoFlag: Boolean = false): void {
     let p: Position = new Position();
-    while (!this._grid[p.x][p.y].open) {
+    while (!this.grid[p.x][p.y].open) {
       p = new Position();
     }
-    this._grid[p.x][p.y].value = twoFlag ? 2 : Math.random() >= 0.10 ? 2 : 4;
-    this._grid[p.x][p.y].open = false;
-    this._needNew = false;
+    this.grid[p.x][p.y].value = twoFlag ? 2 : Math.random() >= 0.10 ? 2 : 4;
+    this.grid[p.x][p.y].open = false;
+    this.needNew = false;
   }
 }
