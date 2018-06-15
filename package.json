@@ -1,18 +1,18 @@
 {
-  "name": "ai48",
-  "scripts": {
-    "go": "node dist/main.js",
-    "build": "./node_modules/typescript/bin/tsc --target es5 src/main.ts --outDir ./dist/ --sourcemap",
-    "clean": "rm -rf dist",
-    "fullclean": "yarn clean && rm -rf node_modules",
-    "fresh": "yarn fullclean && yarn install",
-    "start": "yarn build && yarn go",
-    "ai48": "yarn fresh && yarn start"
-  },
-  "license": "MIT",
-  "devDependencies": {
-    "readline-sync": "^1.4.9",
-    "tslint": "^5.10.0",
-    "typescript": "^2.9.1"
-  }
+    "name": "ai48",
+    "scripts": {
+        "go": "node dist/main.js",
+        "build": "./node_modules/typescript/bin/tsc",
+        "clean": "rm -rf dist",
+        "fullclean": "yarn clean && rm -rf node_modules",
+        "fresh": "yarn fullclean && yarn install",
+        "start": "yarn build && yarn go",
+        "ai48": "yarn fresh && yarn start"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "readline-sync": "^1.4.9",
+        "tslint": "^5.10.0",
+        "typescript": "^2.9.1"
+    }
 }
